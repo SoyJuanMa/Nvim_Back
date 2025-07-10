@@ -1,0 +1,81 @@
+#!/bin/sh
+# =============================================================
+# Author: gh0stzk
+# Repo: https://github.com/gh0stzk/dotfiles
+# Date: 2024-02-22
+#
+# Script Name: Term Launcher
+# Description: Dynamic terminal selector/launcher with multi-mode support
+# Features:
+#   - Rofi-based terminal selection (Alacritty/Termite)
+#
+# Copyright (C) 2021-2025 gh0stzk <z0mbi3.zk@protonmail.com>
+# Licensed under GPL-3.0 license
+# =============================================================
+
+CFG_TERM="$HOME/.config/bspwm/src/config/.term"
+ROFI_THEME="$HOME/.config/bspwm/src/rofi-themes/TermSelector.rasi"
+
+[ -f "$CFG_TERM" ] || echo "wezterm" >"$CFG_TERM"
+
+# Main var
+read -r MY_TERM <"$CFG_TERM"
+
+# Function to choose the terminal using rofi
+choose_terminal() {
+	options="Wezterm Kitty"
+	current_term=$(tr '[:upper:]' '[:lower:]' <"$CFG_TERM")
+
+	index=0
+	selected_index=0
+	for opt in $options; do
+		lc_opt=$(printf "%s" "$opt" | tr '[:upper:]' '[:lower:]')
+		if [ "$lc_opt" = "$current_term" ]; then
+			selected_index=$index
+			break
+		fi
+		index=$((index + 1))
+	done
+
+	chosen=$(printf '%s\n' $options | rofi -theme "$ROFI_THEME" \
+		-mesg "[ Your current terminal is $MY_TERM ]" -dmenu -selected-row "$selected_index")
+
+	if [ -n "$chosen" ]; then
+		echo "$chosen" | tr '[:upper:]' '[:lower:]' >"$CFG_TERM"
+	fi
+}
+
+# Terminal selector
+[ "$1" = "--selecterm" ] && choose_terminal
+
+# Refresh main var (in case it changed)
+read -r MY_TERM <"$CFG_TERM"
+
+# Launch the terminal with appropriate options
+case $MY_TERM in
+"wezterm")
+	case $1 in
+	"--terminal") wezterm ;;
+	"--floating") wezterm start --class FloaTerm ;;
+	"--update") wezterm start --class FloaTerm bash -c 'paru -Syu --nocombinedupgrade; read -n 1' ;;
+	"--checkupdates") wezterm start --class Updating bash -c 'Updates --print-updates; read -n 1' ;;
+	"--yazi") wezterm start --class FloaTerm yazi ;;
+	"--nvim") wezterm start --class NvimTerm nvim ;;
+	"--music") wezterm start --class MusicTerm ncmpcpp ;;
+	"--fetch") wezterm start --class FetchTerm bash -c '~/.local/bin/sysfetch; read -n 1' ;;
+
+	esac
+	;;
+"kitty")
+	case $1 in
+	"--terminal") kitty ;;
+	"--floating") kitty --class=FloaTerm ;;
+	"--update") kitty --hold --class=FloaTerm -e paru -Syu --nocombinedupgrade ;;
+	"--checkupdates") kitty --hold --class=Updating -e Updates --print-updates ;;
+	"--yazi") kitty --hold --name=YaziTerm --class=FloaTerm -e yazi ;;
+	"--nvim") kitty -e nvim ;;
+	"--music") kitty --name=MusicTerm --class=FloaTerm -e ncmpcpp ;;
+	"--fetch") kitty --name=FetchTerm --class=FloaTerm -e ~/.local/bin/sysfetch ;;
+	esac
+	;;
+esac

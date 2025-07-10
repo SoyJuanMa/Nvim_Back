@@ -1,0 +1,56 @@
+#!/bin/sh
+
+XRANDR_OUTPUT=$(xrandr)
+
+# Función POSIX para obtener la resolución y tasa de refresco
+get_monitor_info() {
+	echo "$XRANDR_OUTPUT" | awk -v monitor="$1" '
+        $1 == monitor { getline; print $1, $2 }
+    ' | tr -d '*+'
+}
+
+# Obtener monitores conectados
+set -- $(echo "$XRANDR_OUTPUT" | awk '$2 == "connected" {print $1}')
+NUM_MONITORS=$#
+
+case $NUM_MONITORS in
+1)
+	monitor_1="$1"
+	set -- $(get_monitor_info "$monitor_1")
+	mode_1="$1"
+	rate_1="$2"
+
+	xrandr --output "$monitor_1" --primary --mode "$mode_1" --pos 0x0 --auto --rate "$rate_1"
+	bspc monitor "$monitor_1" -d 1 2 3 4 5 6
+	;;
+2)
+	monitor_1="$1"
+	monitor_2="$2"
+
+	set -- $(get_monitor_info "$monitor_1")
+	mode_1="$1"
+	rate_1="$2"
+
+	# Forzar 1440x900 al segundo monitor si existe esa resolución
+	if echo "$XRANDR_OUTPUT" | grep -A1 "^$monitor_2 connected" | grep -q "1920x1080"; then
+		mode_2="1920x1080"
+		rate_2="60.00"
+	else
+		# Si no existe, se crea y se aplica
+		xrandr --newmode "1920x1080_60.00" 106.50 1440 1520 1672 1904 900 903 909 934 -hsync +vsync 2>/dev/null
+		xrandr --addmode "$monitor_2" "1920x1080_60.00" 2>/dev/null
+		mode_2="1920x1080_60.00"
+		rate_2="60.00"
+	fi
+
+	xrandr --output "$monitor_1" --primary --mode "$mode_1" --pos 0x0 --rate "$rate_1" \
+		--output "$monitor_2" --mode "$mode_2" --left-of "$monitor_1" --rate "$rate_2"
+
+	bspc monitor "$monitor_2" -d 1 2 3 4
+	bspc monitor "$monitor_1" -d 5 6 7 8
+	bspc wm -O "$monitor_2" "$monitor_1"
+	;;
+*)
+	echo "Configuración no implementada para $NUM_MONITORS monitores."
+	;;
+esac

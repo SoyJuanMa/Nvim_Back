@@ -4,6 +4,7 @@ return {
   "rcarriga/nvim-dap-ui",
   event = "VeryLazy",
   dependencies = {
+    "mattkubej/jest.nvim",
     -- https://github.com/mfussenegger/nvim-dap
     "mfussenegger/nvim-dap",
     -- https://github.com/nvim-neotest/nvim-nio

@@ -1,6 +1,13 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
 
+local redux = require("snippets.redux")
+local ls = require("luasnip")
+
+for _, ft in ipairs({ "javascript", "typescript", "javascriptreact", "typescriptreact" }) do
+  ls.add_snippets(ft, redux)
+end
+
 vim.opt.wrap = true
 vim.opt.timeoutlen = 1000
 vim.opt.ttimeoutlen = 0

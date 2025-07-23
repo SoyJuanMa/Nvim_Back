@@ -24,11 +24,35 @@ add_newline = true
 command_timeout = 3600000
 
 # color and style settings
-palette = "kanagawa"
+palette = "gentleman"
 
 [fill]
 symbol = ' '
-
+[palettes.gentleman]
+text = "#F3F6F9"
+red = "#CB7C94"
+green = "#B7CC85"
+yellow = "#FFE066"
+blue = "#7FB4CA"
+mauve = "#A3B5D6"
+pink = "#FF8DD7"
+teal = "#7AA89F"
+peach = "#DEBA87"
+subtext0 = "#5C6170"
+overlay0 = "#232A40"
+rosewater = "#E0C15A"
+flamingo = "#FF8DD7"
+maroon = "#C4746E"
+lavender = "#B99BF2"
+subtext1 = "#8A8FA3"
+overlay2 = "#313342"
+overlay1 = "#191E28"
+surface2 = "#27345C"
+surface1 = "#232A40"
+surface0 = "#191E28"
+base = "none"
+mantle = "#06080f"
+crust = "#06080f"
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
@@ -86,19 +110,18 @@ crust = "#16161D"
 
 
 [character]
-success_symbol = "[  :](fg:peach)"
-error_symbol = "[  :](fg:maroon)"
-vimcmd_symbol = "[ N:](bold red)"
+success_symbol = "[󱗞 ](fg:green)"
+error_symbol = "[󱗞 ](fg:red)"
+vimcmd_symbol = "[N](bold red)"
 vimcmd_replace_one_symbol = "[R](bold peach)"
 vimcmd_visual_symbol = "[V](bold mauve)"
 
 [username]
-style_user = 'bold yellow'
-style_root = 'bold surface2'
-format = '[  $user:](fg:$style) '
+style_user = 'bold blue'
+style_root = 'bold red'
+format = '[󱗞  $user](fg:$style) '
 disabled = false
 show_always = true
-
 
 [directory]
 format = "[$path](bold $style)[$read_only]($read_only_style)"
@@ -106,9 +129,9 @@ truncation_length = 2
 style = "fg:blue"
 read_only_style = "fg:blue"
 before_repo_root_style = "fg:blue"
-truncation_symbol = ".../"
+truncation_symbol = "…/"
 truncate_to_repo = true
-read_only = " "
+read_only = "  "
 
 [directory.substitutions]
 "Documents" = "󰈙 "

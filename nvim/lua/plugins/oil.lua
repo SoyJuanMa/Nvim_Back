@@ -34,6 +34,6 @@ return {
     -- Plugin: nvim-web-devicons
     -- URL: https://github.com/nvim-tree/nvim-web-devicons
     -- Description: A Lua fork of vim-web-devicons for Neovim.
-    "nvim-tree/nvim-web-devicons",
+    "echasnovski/mini.icons",
   },
 }

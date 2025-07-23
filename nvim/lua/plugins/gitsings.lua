@@ -25,6 +25,6 @@ return {
   config = function(_, opts)
     require("gitsigns").setup(opts)
     -- Definís el highlight después de cargar el plugin
-    vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { fg = "#E80C6D", bg = "none", italic = true })
+    vim.api.nvim_set_hl(0, "GitSignsCurrentLineBlame", { fg = "#c334ff", bg = "none", italic = true })
   end,
 }

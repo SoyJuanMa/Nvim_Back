@@ -1,6 +1,14 @@
 return {
   {
-
+    {
+      "Gentleman-Programming/gentleman-kanagawa-blur",
+      name = "gentleman-kanagawa-blur",
+      priority = 1000,
+    },
+    {
+      "olimorris/onedarkpro.nvim",
+      priority = 1000, -- Ensure it loads first
+    },
     {
       "catppuccin/nvim",
       name = "catppuccin",
@@ -20,7 +28,7 @@ return {
     {
       "rebelot/kanagawa.nvim",
       priority = 1000,
-      lazy = false,
+      lazy = true,
       config = function()
         require("kanagawa").setup({
           compile = false, -- enable compiling the colorscheme
@@ -49,12 +57,10 @@ return {
             },
           },
           overrides = function(colors) -- add/modify highlights
-            local theme = colors.theme
             return {
               LineNr = { bg = "none" },
               NormalFloat = { bg = "none" },
               FloatBorder = { bg = "none" },
-              FloatKeywordprg = { bg = "#2a2e36" },
               FloatTitle = { bg = "none" },
               TelescopeNormal = { bg = "none" },
               TelescopeBorder = { bg = "none" },
@@ -74,7 +80,7 @@ return {
       "LazyVim/LazyVim",
       opts = {
         -- Set the default color scheme
-        colorscheme = "kanagawa",
+        colorscheme = "gentleman-kanagawa-blur",
       },
     },
   },

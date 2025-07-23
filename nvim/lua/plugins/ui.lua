@@ -84,7 +84,7 @@ return {
     requires = { "nvim-tree/nvim-web-devicons", opt = true }, -- Optional dependency for icons
     opts = {
       options = {
-        theme = "kanagawa", -- Set the theme for lualine
+        theme = "gentleman-kanagawa-blur", -- Set the theme for lualine
         icons_enabled = true, -- Enable icons in the statusline
       },
       sections = {
@@ -117,6 +117,7 @@ return {
             },
           },
         },
+        vim.api.nvim_set_hl(0, "SnacksDashboardHeader", { fg = "#c334ff", bold = true }),
         {
           filetypes = { "codecompanion" },
           sections = {

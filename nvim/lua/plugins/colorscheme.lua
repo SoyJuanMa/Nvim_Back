@@ -1,15 +1,6 @@
 return {
   {
     {
-      "Gentleman-Programming/gentleman-kanagawa-blur",
-      name = "gentleman-kanagawa-blur",
-      priority = 1000,
-    },
-    {
-      "olimorris/onedarkpro.nvim",
-      priority = 1000, -- Ensure it loads first
-    },
-    {
       "catppuccin/nvim",
       name = "catppuccin",
       priority = 1000,
@@ -19,6 +10,28 @@ return {
         term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
       },
     },
+
+    {
+      "Gentleman-Programming/gentleman-kanagawa-blur",
+      name = "gentleman-kanagawa-blur",
+      priority = 1000,
+      config = function()
+        require("gentleman_kanagawa_blur").setup({
+          variant = "sakura_night_blur",
+          styles = {
+            booleans = {
+              italic = true,
+              bold = true,
+            },
+          },
+          integrations = {
+            hop = true,
+            telescope = false,
+          },
+        })
+      end,
+    },
+
     {
       "Alan-TheGentleman/oldworld.nvim",
       lazy = false,
@@ -76,10 +89,8 @@ return {
       end,
     },
     {
-      -- LazyVim configuration
       "LazyVim/LazyVim",
       opts = {
-        -- Set the default color scheme
         colorscheme = "gentleman-kanagawa-blur",
       },
     },

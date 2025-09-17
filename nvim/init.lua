@@ -1,6 +1,7 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.lazy")
+require("config.nodejs").setup({ silent = true })
 
+require("config.lazy")
 local redux = require("snippets.redux")
 local ls = require("luasnip")
 
@@ -43,3 +44,6 @@ vim.api.nvim_create_user_command("SnapVisual", function()
 
   print("📸 Fragmento capturado en: " .. outpath)
 end, { range = true })
+vim.keymap.set("n", "<leader>ce", function()
+  vim.diagnostic.open_float(nil, { focus = false })
+end)

@@ -49,6 +49,12 @@ return {
             },
           },
         },
+        custom_elements_ls = {
+          cmd = { "/home/ikaros/.bun/bin/custom-elements-languageserver", "--stdio" },
+          filetypes = { "javascript", "typescript", "html", "vue" },
+          root_dir = require("lspconfig.util").root_pattern("package.json", ".git"),
+          autostart = true,
+        },
       },
     },
   },

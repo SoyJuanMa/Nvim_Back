@@ -206,7 +206,15 @@ return {
     "folke/snacks.nvim",
     opts = {
       notifier = {},
-      image = {},
+      image = {
+        doc = {
+          enabled = true,
+          inline = true,
+          float = true,
+          max_width = 30, -- ancho máximo más pequeño
+          max_height = 15, -- alto máximo más pequeño
+        },
+      },
       picker = {
         exclude = {
           ".git",

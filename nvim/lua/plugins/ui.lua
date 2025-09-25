@@ -1,5 +1,3 @@
-vim.api.nvim_set_hl(0, "SnacksDashboardHeader", { fg = "#c34043", bold = true })
-
 local mode = {
   "mode",
   fmt = function(s)
@@ -93,7 +91,7 @@ return {
         lualine_a = {
           {
             "mode", -- Display the current mode
-            icon = "", -- Set the icon for the mode
+            icon = "", -- Set the icon for the mode
           },
         },
       },
@@ -206,15 +204,7 @@ return {
     "folke/snacks.nvim",
     opts = {
       notifier = {},
-      image = {
-        doc = {
-          enabled = true,
-          inline = true,
-          float = true,
-          max_width = 30, -- ancho máximo más pequeño
-          max_height = 15, -- alto máximo más pequeño
-        },
-      },
+      image = {},
       picker = {
         exclude = {
           ".git",

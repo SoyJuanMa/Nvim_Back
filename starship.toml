@@ -111,8 +111,8 @@ crust = "#16161D"
 
 
 [character]
-success_symbol = "[ :](fg:green)"
-error_symbol = "[ :](fg:red)"
+success_symbol = "[:](fg:green)"
+error_symbol = "[:](fg:red)"
 vimcmd_symbol = "[](bold red)"
 vimcmd_replace_one_symbol = "[R](bold peach)"
 vimcmd_visual_symbol = "[](bold mauve)"
@@ -120,7 +120,7 @@ vimcmd_visual_symbol = "[](bold mauve)"
 [username]
 style_user = 'bold blue'
 style_root = 'bold red'
-format = '[ :$user](fg:$style) '
+format = '[:$user](fg:$style) '
 disabled = false
 show_always = true
 
@@ -156,7 +156,7 @@ conflicted = "⚔️"
 ahead = " [⇡${count}](#957FB8)"
 behind = " [⇣${count}](#2D4F67)"
 staged = " [ ${count}](#74c7ec)"
-modified = " [ ${count}](#FF9E3B)"
+modified = " [ ${count}](#FF9E3B)"
 untracked = ' [ ${count}](#7AA89F)'
 deleted = ' [󰆴 ${count}](#FF5D62)'
 

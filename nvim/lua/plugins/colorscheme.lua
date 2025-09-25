@@ -1,5 +1,37 @@
 return {
   {
+    -- {
+    --   "xiyaowong/transparent.nvim",
+    --   config = function()
+    --     require("transparent").setup({
+    --       extra_groups = { -- table/string: additional groups that should be cleared
+    --         "Normal",
+    --         "NormalNC",
+    --         "Comment",
+    --         "Constant",
+    --         "Special",
+    --         "Identifier",
+    --         "Statement",
+    --         "PreProc",
+    --         "Type",
+    --         "Underlined",
+    --         "Todo",
+    --         "String",
+    --         "Function",
+    --         "Conditional",
+    --         "Repeat",
+    --         "Operator",
+    --         "Structure",
+    --         "LineNr",
+    --         "NonText",
+    --         "SignColumn",
+    --         "CursorLineNr",
+    --         "EndOfBuffer",
+    --       },
+    --       exclude_groups = {}, -- table: groups you don't want to clear
+    --     })
+    --   end,
+    -- },
     {
       "catppuccin/nvim",
       name = "catppuccin",
@@ -10,28 +42,11 @@ return {
         term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
       },
     },
-
     {
       "Gentleman-Programming/gentleman-kanagawa-blur",
       name = "gentleman-kanagawa-blur",
       priority = 1000,
-      config = function()
-        require("gentleman_kanagawa_blur").setup({
-          variant = "sakura_night_blur",
-          styles = {
-            booleans = {
-              italic = true,
-              bold = true,
-            },
-          },
-          integrations = {
-            hop = true,
-            telescope = false,
-          },
-        })
-      end,
     },
-
     {
       "Alan-TheGentleman/oldworld.nvim",
       lazy = false,
@@ -44,7 +59,7 @@ return {
       lazy = true,
       config = function()
         require("kanagawa").setup({
-          compile = false, -- enable compiling the colorscheme
+          compile = true, -- enable compiling the colorscheme
           undercurl = true, -- enable undercurls
           commentStyle = { italic = true },
           functionStyle = {},
@@ -52,7 +67,7 @@ return {
           statementStyle = { bold = true },
           typeStyle = {},
           transparent = true, -- do not set background color
-          dimInactive = false, -- dim inactive window `:h hl-NormalNC`
+          dimInactive = true, -- dim inactive window `:h hl-NormalNC`
           terminalColors = true, -- define vim.g.terminal_color_{0,17}
           colors = { -- add/modify theme and palette colors
             palette = {},
@@ -91,7 +106,7 @@ return {
     {
       "LazyVim/LazyVim",
       opts = {
-        colorscheme = "kanagawa",
+        colorscheme = "gentleman-kanagawa-blur",
       },
     },
   },

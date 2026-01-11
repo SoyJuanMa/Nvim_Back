@@ -53,6 +53,11 @@ return {
       priority = 1000,
       opts = {},
     },
+    -- lua/plugins/rose-pine.lua
+    {
+      "rose-pine/neovim",
+      name = "rose-pine",
+    },
     {
       "rebelot/kanagawa.nvim",
       priority = 1000,
@@ -107,6 +112,7 @@ return {
       "LazyVim/LazyVim",
       opts = {
         colorscheme = "gentleman-kanagawa-blur",
+        --colorscheme = "kanagawa-dragon",
       },
     },
   },

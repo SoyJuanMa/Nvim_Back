@@ -2,11 +2,6 @@
 
 -- Node.js configuration - always use latest stable version
 vim.g.node_host_prog = vim.fn.exepath("node") or "/usr/local/bin/node"
--- Ensure we're using a recent Node version for LSPs and plugins
-if vim.fn.executable("node") == 1 then
-  local node_version = vim.fn.system("node --version"):gsub("\n", "")
-  print("Using Node.js version: " .. node_version)
-end
 
 -- Spell-checking
 vim.opt.spell = true -- activa spell checker
@@ -56,6 +51,8 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.editor.snacks_picker" },
 
     -- Formatting plugins
+    { import = "lazyvim.plugins.extras.dap.core" },
+
     { import = "lazyvim.plugins.extras.formatting.biome" },
     { import = "lazyvim.plugins.extras.formatting.prettier" },
 
@@ -82,7 +79,7 @@ require("lazy").setup({
 
     -- AI plugins
     { import = "lazyvim.plugins.extras.ai.copilot" },
-    { import = "lazyvim.plugins.extras.ai.copilot-chat" },
+    -- { import = "lazyvim.plugins.extras.ai.copilot-chat" },
 
     -- Import/override with your plugins
     { import = "plugins" },

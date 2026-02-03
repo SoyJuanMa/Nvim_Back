@@ -1,37 +1,37 @@
 return {
   {
-    -- {
-    --   "xiyaowong/transparent.nvim",
-    --   config = function()
-    --     require("transparent").setup({
-    --       extra_groups = { -- table/string: additional groups that should be cleared
-    --         "Normal",
-    --         "NormalNC",
-    --         "Comment",
-    --         "Constant",
-    --         "Special",
-    --         "Identifier",
-    --         "Statement",
-    --         "PreProc",
-    --         "Type",
-    --         "Underlined",
-    --         "Todo",
-    --         "String",
-    --         "Function",
-    --         "Conditional",
-    --         "Repeat",
-    --         "Operator",
-    --         "Structure",
-    --         "LineNr",
-    --         "NonText",
-    --         "SignColumn",
-    --         "CursorLineNr",
-    --         "EndOfBuffer",
-    --       },
-    --       exclude_groups = {}, -- table: groups you don't want to clear
-    --     })
-    --   end,
-    -- },
+    {
+      "xiyaowong/transparent.nvim",
+      config = function()
+        require("transparent").setup({
+          extra_groups = { -- table/string: additional groups that should be cleared
+            "Normal",
+            "NormalNC",
+            "Comment",
+            "Constant",
+            "Special",
+            "Identifier",
+            "Statement",
+            "PreProc",
+            "Type",
+            "Underlined",
+            "Todo",
+            "String",
+            "Function",
+            "Conditional",
+            "Repeat",
+            "Operator",
+            "Structure",
+            "LineNr",
+            "NonText",
+            "SignColumn",
+            "CursorLineNr",
+            "EndOfBuffer",
+          },
+          exclude_groups = {}, -- table: groups you don't want to clear
+        })
+      end,
+    },
     {
       "catppuccin/nvim",
       name = "catppuccin",
@@ -57,6 +57,20 @@ return {
     {
       "rose-pine/neovim",
       name = "rose-pine",
+      config = function()
+        require("rose-pine").setup({
+          compile = false, -- enable compiling the colorscheme
+          undercurl = true, -- enable undercurls
+          commentStyle = { italic = true },
+          functionStyle = {},
+          keywordStyle = { italic = true },
+          statementStyle = { bold = true },
+          typeStyle = {},
+          transparent = true, -- do not set background color
+          dimInactive = false, -- dim inactive window `:h hl-NormalNC`
+          terminalColors = true, -- define vim.g.terminal_color_{0,17}
+        })
+      end,
     },
     {
       "rebelot/kanagawa.nvim",
@@ -111,7 +125,8 @@ return {
     {
       "LazyVim/LazyVim",
       opts = {
-        colorscheme = "gentleman-kanagawa-blur",
+        colorscheme = "rose-pine",
+        -- colorscheme = "gentleman-kanagawa-blur",
         --colorscheme = "kanagawa-dragon",
       },
     },

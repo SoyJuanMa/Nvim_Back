@@ -1,131 +1,73 @@
-format = """\
-($directory)\
+format = """
 $os\
+$username\
+$hostname\
+$directory\
 $git_branch\
+$git_state\
 $git_status\
 $fill\
-$docker_contex\
-$rust\
-$golang\
-$php\
-$bun\
 $nodejs\
-$java\
-$c\
-$conda\
-$zig\
-$python\
-$cmd_duration\
+$bun\
+$docker_context\
 $time\
-\n$character\
+$cmd_duration\
+$line_break\
+$character\
 """
-add_newline = true
 
-# Command timeout
 command_timeout = 3600000
 
-# color and style settings
-palette = "gentleman"
+
+palette = 'dracula'
+
+# ───────────────────
+# 🧛 Dracula Palette
+# ───────────────────
+[palettes.dracula]
+color_fg0     = '#f8f8f2'
+color_bg1     = '#282a36'
+color_bg3     = '#44475a'
+color_purple  = '#bd93f9'
+color_pink    = '#ff79c6'
+color_red     = '#ff5555'
+color_green   = '#50fa7b'
+color_yellow  = '#f1fa8c'
+color_blue    = '#6272a4'
+color_cyan    = '#8be9fd'
+color_orange  = '#ffb86c'
+
+# ───────────────────
+# OS
+# ───────────────────
 
 [fill]
-symbol = ' '
-[palettes.gentleman]
-text = "#F3F6F9"
-red = "#CB7C94"
-green = "#B7CC85"
-yellow = "#FFE066"
-blue = "#7FB4CA"
-mauve = "#A3B5D6"
-pink = "#FF8DD7"
-teal = "#7AA89F"
-peach = "#DEBA87"
-subtext0 = "#5C6170"
-overlay0 = "#232A40"
-rosewater = "#E0C15A"
-flamingo = "#FF8DD7"
-maroon = "#C4746E"
-lavender = "#B99BF2"
-subtext1 = "#8A8FA3"
-overlay2 = "#313342"
-overlay1 = "#191E28"
-surface2 = "#27345C"
-surface1 = "#232A40"
-surface0 = "#191E28"
-base = "none"
-mantle = "#06080f"
-crust = "#06080f"
-
-[palettes.catppuccin_mocha]
-rosewater = "#f5e0dc"
-flamingo = "#f2cdcd"
-pink = "#f5c2e7"
-mauve = "#cba6f7"
-red = "#f38ba8"
-maroon = "#eba0ac"
-peach = "#fab387"
-yellow = "#f9e2af"
-green = "#a6e3a1"
-teal = "#94e2d5"
-sky = "#89dceb"
-sapphire = "#74c7ec"
-blue = "#89b4fa"
-lavender = "#b4befe"
-text = "#cdd6f4"
-subtext1 = "#bac2de"
-subtext0 = "#a6adc8"
-overlay2 = "#9399b2"
-overlay1 = "#7f849c"
-overlay0 = "#6c7086"
-surface2 = "#585b70"
-surface1 = "#45475a"
-surface0 = "#313244"
-base = "#1e1e2e"
-mantle = "#181825"
-crust = "#11111b"
-
-[palettes.kanagawa]
-text = "#DCD7BA"
-red = "#E46876"
-green = "#98BB6C"
-yellow = "#FF9E3B"
-blue = "#7E9CD8"
-mauve = "#957FB8"
-pink = "#D27E99"
-teal = "#7AA89F"
-peach = "#FFA066"
-subtext0 = "#727169"
-overlay0 = "#2D4F67"
-rosewater = "#C0A36E"
-flamingo = "#D27E99"
-maroon = "#C34043"
-lavender = "#b8b4d0"
-subtext1 = "#C8C093"
-overlay2 = "#54546D"
-overlay1 = "#363646"
-surface2 = "#223249"
-surface1 = "#2A2A37"
-surface0 = "#1F1F28"
-base = "#1F1F28"
-mantle = "#16161D"
-crust = "#16161D"
-
-
-[character]
-success_symbol = "[:](fg:green)"
-error_symbol = "[:](fg:red)"
-vimcmd_symbol = "[](bold red)"
-vimcmd_replace_one_symbol = "[R](bold peach)"
-vimcmd_visual_symbol = "[](bold mauve)"
-
-[username]
-style_user = 'bold blue'
-style_root = 'bold red'
-format = '[:$user](fg:$style) '
+symbol = " "
+[os]
 disabled = false
+style = "fg:color_purple"
+
+[os.symbols]
+Arch = "󰣇"
+Linux = "󰌽"
+Windows = "󰍲"
+Macos = "󰀵"
+
+# ───────────────────
+# User
+# ───────────────────
+[username]
 show_always = true
+style_user = "fg:color_purple"
+style_root = "fg:color_purple"
+format = '[ $user  ]($style)'
+
+# ───────────────────
+# Directory
+# ───────────────────
 
 [directory]
-format = "[$path](bold $style)[$read_only]($read_only_style)"
+format = "[$path](bold $style)[$read_only]($read_only_style) "
 truncation_length = 2
 style = "fg:blue"
 read_only_style = "fg:blue"
@@ -134,85 +76,93 @@ truncation_symbol = "…/"
 truncate_to_repo = true
 read_only = "  "
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-
-[cmd_duration]
-format = " took [ $duration]($style) "
-style = "bold fg:yellow"
-min_time = 500
+# ───────────────────
+# Git
+# ───────────────────
 
 [git_branch]
-format = "[:$symbol](fg:red)[$branch]($style)"
-style = "bold fg:yellow"
-symbol = " "
-
+format = "[ $branch]($style)"
+style = "color_orange"
 [git_status]
-format = '$all_status$ahead_behind'
-conflicted = "⚔️"
-ahead = " [⇡${count}](#957FB8)"
-behind = " [⇣${count}](#2D4F67)"
-staged = " [ ${count}](#74c7ec)"
-modified = " [ ${count}](#FF9E3B)"
-untracked = ' [ ${count}](#7AA89F)'
-deleted = ' [󰆴 ${count}](#FF5D62)'
+format = "[  ($conflicted$untracked$modified$staged$renamed$deleted)($ahead_behind$stashed)]($style)"
+style = "fg:color_blue"
 
+conflicted = "[✖${count}](fg:color_red) "
+untracked  = "[●${count}](fg:color_pink) "
+modified   = "[✚${count}](fg:color_yellow) "
+staged     = "[✔${count}](fg:color_green) "
+renamed    = "[➜${count}](fg:color_blue) "
+deleted    = "[✘${count}](fg:color_red) "
 
+stashed    = "[≡${count}](fg:color_cyan) "
 
-[docker_context]
-disabled = true
-symbol = " "
-
-[python]
-disabled = false
-format = '[${symbol}${pyenv_prefix}(${version})( \($virtualenv\))](fg:#FF9E3B)($style)'
-symbol = " "
-version_format = "${raw}"
-
-[java]
-format = '[[ $symbol ($version) ](fg:#FF5D62)]($style)'
-version_format = "${raw}"
-symbol = " "
-disabled = false
-
-[c]
-format = '[[ $symbol ($version) ](fg:#7FB4CA)]($style)'
-symbol = " "
-version_format = "${raw}"
-disabled = false
-
-[zig]
-format = '[[ $symbol ($version) ](fg:#FFA066)]($style)'
-version_format = "${raw}"
-disabled = false
-
-[bun]
-version_format = "$raw"
-format = '[[ $symbol($version) ](fg:text)]($style)'
-disabled = false
-
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bright-black"
+# ───────────────────
+# Languages / Runtimes
+# ───────────────────
 [nodejs]
 symbol = " "
-format = '[[ $symbol($version) ](fg:green)]($style)'
+format = '[[ $symbol($version) ](fg:color_green)]($style)'
 detect_files = []
 detect_extensions = []
+[bun]
+symbol = "🥟"
+style = "fg:color_orange"
+format = '[[ $symbol $version ]( fg:color_orange)]($style)'
+
+[c]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol ](fg:color_fg0 bg:color_blue)]($style)'
+
+[cpp]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol ](fg:color_fg0 bg:color_blue)]($style)'
 
 [rust]
 symbol = ""
-format = '[[ $symbol ($version) ](fg:#FF5D62)]($style)'
+style = "bg:color_blue"
+format = '[[ $symbol $version ](fg:color_fg0 bg:color_blue)]($style)'
 
 [golang]
 symbol = ""
-format = '[[ $symbol ($version) ](fg:#7FB4CA)]($style)'
+style = "bg:color_blue"
+format = '[[ $symbol $version ](fg:color_fg0 bg:color_blue)]($style)'
 
-[php]
-symbol = ""
-format = '[[ $symbol ($version) ](fg:#FF9E3B)]($style)'
+[python]
+symbol = ""
+style = "bg:color_blue"
+format = '[[ $symbol $version ](fg:color_fg0 bg:color_blue)]($style)'
 
+# ───────────────────
+# Docker
+# ───────────────────
+[docker_context]
+symbol = ""
+style = "bg:color_bg3"
+format = '[[ $symbol $context ](fg:color_cyan bg:color_bg3)]($style)'
+detect_files = []
+detect_extensions = []
+
+# ───────────────────
+# Time
+# ───────────────────
 [time]
 disabled = false
 time_format = "%R"
-format = '[[  $time ](fg:#8BA4B0)]($style)'
+style = "fg:color_bg1"
+format = '[[  $time ](fg:color_fg0)]($style)'
+
+# ───────────────────
+# Prompt
+# ───────────────────
+[character]
+success_symbol = "[❯](purple)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](green)"
+[cmd_duration]
+format = "[$duration]($style) "
+style = "yellow"

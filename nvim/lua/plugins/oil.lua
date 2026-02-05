@@ -4,7 +4,6 @@
 return {
   "stevearc/oil.nvim",
 
-  -- Load Oil when opening a directory or when using the keymap
   lazy = false,
 
   keys = {
@@ -13,19 +12,12 @@ return {
   },
 
   opts = {
-    -- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
     default_file_explorer = true,
-
-    -- Restore window options to previous values when leaving an oil buffer
     restore_win_options = true,
-
-    -- Skip the confirmation popup for simple operations
     skip_confirm_for_simple_edits = false,
-
-    -- Selecting a new/moved/renamed file or directory will prompt you to save changes first
     prompt_save_on_select_new_entry = true,
+    use_default_keymaps = false,
 
-    -- Keymaps in oil buffer. Can be any value that `vim.keymap.set` accepts OR a table of keymap
     keymaps = {
       ["g?"] = "actions.show_help",
       ["<CR>"] = "actions.select",
@@ -43,92 +35,106 @@ return {
       ["gx"] = "actions.open_external",
       ["g."] = "actions.toggle_hidden",
       ["g\\"] = "actions.toggle_trash",
-      -- Quick quit
       ["q"] = "actions.close",
     },
 
-    -- Set to false to disable all of the above keymaps
-    use_default_keymaps = false,
-
     view_options = {
-      -- Show files and directories that start with "." by default
       show_hidden = true,
-      -- This function defines what is considered a "hidden" file
       is_hidden_file = function(name, bufnr)
         return vim.startswith(name, ".")
       end,
-      -- This function defines what will never be shown, even when `show_hidden` is set
       is_always_hidden = function(name, bufnr)
         return name == ".." or name == ".git"
       end,
-      -- Natural sort order for files and directories
       natural_order = true,
       case_insensitive = false,
       sort = {
-        -- sort order can be "asc" or "desc"
-        -- see :help oil-columns to see which columns are sortable
         { "type", "asc" },
         { "name", "asc" },
       },
+
+      -- Aquí agregamos los íconos personalizados
+      symbols = {
+        files = {
+          -- archivos específicos
+          [".test.ts"] = "󰙨",
+          [".trash"] = "",
+          [".cargo"] = "󱣘",
+          [".emacs.d"] = "",
+          ["a.out"] = "",
+          ["bun.lock"] = "",
+          ["package.json"] = "",
+          ["tsconfig.json"] = "",
+
+          -- extensiones
+          [".ts"] = "󰛦",
+          [".js"] = "",
+          [".go"] = "",
+          [".hs"] = "",
+          [".rs"] = "",
+          [".lua"] = "",
+          [".md"] = "",
+          [".pdf"] = "",
+          [".png"] = "",
+          [".yaml"] = "",
+          [".tsx"] = "",
+          [".jsx"] = "",
+          [".spec.ts"] = "󰙨",
+          [".test.js"] = "󰙨",
+
+          -- carpetas importantes
+          ["node_modules"] = "",
+          [".git"] = "",
+          ["icons"] = "",
+          ["assets"] = "",
+
+          -- tipos generales
+          ["dir"] = "",
+          ["file"] = "",
+          ["pipe"] = "󰟥",
+          ["socket"] = "󰐧",
+          ["executable"] = "",
+          ["symlink-dir"] = "",
+          ["symlink-file"] = "",
+          ["device-char"] = "",
+          ["device-block"] = "󰜫",
+          ["special"] = "",
+        },
+      },
     },
 
-    -- Configuration for the floating window in oil.open_float
     float = {
-      -- Padding around the floating window
       padding = 2,
       max_width = 100,
       max_height = 30,
       border = "rounded",
-      win_options = {
-        winblend = 0,
-      },
-      -- preview_split: Split direction: "auto", "left", "right", "above", "below".
+      win_options = { winblend = 0 },
       preview_split = "auto",
-      -- This is the config that will be passed to nvim_open_win.
-      -- Change values here to customize the layout
       override = function(conf)
         return conf
       end,
     },
 
-    -- Configuration for the actions floating preview window
     preview = {
-      -- Width dimensions can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
-      -- min_width and max_width can be a single value or a list of mixed integer/float types.
       max_width = 0.9,
-      -- min_width = {40, 0.4} means "at least 40 columns, or at least 40% of total"
       min_width = { 40, 0.4 },
-      -- optionally define an integer/float for the exact width of the preview window
-      width = nil,
-      -- Height dimensions can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
       max_height = 0.9,
       min_height = { 5, 0.1 },
-      -- optionally define an integer/float for the exact height of the preview window
-      height = nil,
       border = "rounded",
-      win_options = {
-        winblend = 0,
-      },
-      -- Whether the preview window is automatically updated when the cursor is moved
+      win_options = { winblend = 0 },
       update_on_cursor_moved = true,
     },
 
-    -- Configuration for the floating progress window
     progress = {
       max_width = 0.9,
       min_width = { 40, 0.4 },
-      width = nil,
       max_height = { 10, 0.9 },
       min_height = { 5, 0.1 },
-      height = nil,
       border = "rounded",
       minimized_border = "none",
-      win_options = {
-        winblend = 0,
-      },
+      win_options = { winblend = 0 },
     },
 
-    -- Configuration for the floating SSH window
     ssh = {
       border = "rounded",
     },
@@ -141,15 +147,12 @@ return {
   config = function(_, opts)
     require("oil").setup(opts)
 
-    -- Custom autocmds for Oil
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "oil",
       callback = function()
-        -- Set local options for oil buffers
         vim.opt_local.colorcolumn = ""
         vim.opt_local.signcolumn = "no"
 
-        -- Auto-save when leaving oil buffer with changes
         vim.api.nvim_create_autocmd("BufLeave", {
           buffer = 0,
           callback = function()
@@ -161,7 +164,6 @@ return {
       end,
     })
 
-    -- Global keymap to open Oil in current buffer's directory
     vim.keymap.set("n", "<leader>-", function()
       local oil = require("oil")
       local current_buf = vim.api.nvim_get_current_buf()

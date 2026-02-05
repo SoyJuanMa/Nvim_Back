@@ -43,4 +43,11 @@ return {
     "coder/claudecode.nvim",
     enabled = false,
   },
+  {
+    -- Plugin: trouble.nvim - Deshabilitado para usar diagnósticos inline
+    -- URL: https://github.com/folke/trouble.nvim
+    -- Description: Deshabilitado porque preferimos diagnósticos inline tipo gitsigns
+    "folke/trouble.nvim",
+    enabled = false,
+  },
 }

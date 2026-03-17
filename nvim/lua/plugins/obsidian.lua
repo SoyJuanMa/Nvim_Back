@@ -11,6 +11,7 @@ return {
     "nvim-lua/plenary.nvim",
   },
   opts = {
+    legacy_commands = false,
     workspaces = {
       {
         name = "GentlemanNotes", -- Name of the workspace
@@ -24,8 +25,6 @@ return {
       -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', 'mini.pick' or 'snacks.pick'.
       name = "snacks.pick",
     },
-    -- Disable legacy commands to use the new command system
-    legacy_commands = false,
     -- Optional, define your own callbacks to further customize behavior.
     callbacks = {
       -- Runs anytime you enter the buffer for a note.

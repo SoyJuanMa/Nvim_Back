@@ -1,3 +1,5 @@
+vim.api.nvim_set_hl(0, "SnacksDashboardHeader", { fg = "#c34043", bold = true }) -- color kanagawa dragon red
+
 local mode = {
   "mode",
   fmt = function(s)
@@ -47,8 +49,22 @@ return {
   -- URL: https://github.com/folke/todo-comments.nvim
   -- Description: Plugin to highlight and search for TODO, FIX, HACK, etc. comments in your code.
   -- IMPORTANT: using version "*" to fix a bug
-  { "folke/todo-comments.nvim", version = "*" },
-
+  -- { "folke/todo-comments.nvim", version = "*" },
+  {
+    "folke/ts-comments.nvim",
+    opts = {},
+    event = "VeryLazy",
+    enabled = vim.fn.has("nvim-0.10.0") == 1,
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
   -- Plugin: folke/which-key.nvim
   -- URL: https://github.com/folke/which-key.nvim
   -- Description: Plugin to show a popup with available keybindings.
@@ -84,8 +100,9 @@ return {
     requires = { "nvim-tree/nvim-web-devicons", opt = true }, -- Optional dependency for icons
     opts = {
       options = {
-        --       theme = "gentleman-kanagawa-blur", -- Set the theme for lualine
-        theme = "rose-pine", -- Set the theme for lualine
+        theme = "gentleman-kanagawa-blur", -- Set the theme for lualine
+        --  theme = "onedark", -- Corregido: era "onadark"
+        --   theme = "kanagawa",
         icons_enabled = true, -- Enable icons in the statusline
       },
       sections = {
@@ -102,7 +119,7 @@ return {
           filetypes = { "oil" },
           sections = {
             lualine_a = {
-              mode,
+              "mode",
             },
             lualine_b = {
               function()
@@ -122,13 +139,13 @@ return {
           filetypes = { "codecompanion" },
           sections = {
             lualine_a = {
-              mode,
+              "mode",
             },
             lualine_b = {
-              codecompanion_adapter_name,
+              --             codecompanion_adapter_name,
             },
             lualine_c = {
-              codecompanion_current_model_name,
+              --           codecompanion_current_model_name,
             },
             lualine_x = {},
             lualine_y = {
@@ -141,7 +158,7 @@ return {
           inactive_sections = {
             lualine_a = {},
             lualine_b = {
-              codecompanion_adapter_name,
+              --         codecompanion_adapter_name,
             },
             lualine_c = {},
             lualine_x = {},
@@ -257,8 +274,8 @@ return {
 ]],
           -- stylua: ignore
           ---@type snacks.dashboard.Item[]
-          keys = {
-            { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+          keys = {    
+            { icon = " ", key = "ff", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
             { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
             { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
             { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },

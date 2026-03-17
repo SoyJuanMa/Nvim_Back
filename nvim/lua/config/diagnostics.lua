@@ -1,321 +1,156 @@
--- Configuración de diagnósticos inline con wrap automático
--- Los errores aparecen directamente en el editor como gitsigns
+-- Configuración SIMPLE de diagnósticos que funciona
 
 local M = {}
 
--- Función para formatear mensajes con wrap inteligente
-local function format_diagnostic_message(diagnostic)
-  local message = diagnostic.message
-  
-  -- Limpiar el mensaje
-  message = message:gsub("\n", " "):gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
-  
-  -- Si el mensaje es muy largo, cortarlo inteligentemente
-  local max_length = 100 -- Máximo por línea virtual
-  if #message <= max_length then
-    return " " .. message
-  end
-  
-  -- Cortar inteligentemente
-  local truncated = message:sub(1, max_length - 3) .. "..."
-  return " " .. truncated
-end
-
--- Configuración de diagnósticos de Neovim
+-- Configuración básica de diagnósticos CON ICONOS COLORIDOS  
 vim.diagnostic.config({
-  -- Deshabilitar texto virtual inline
-  virtual_text = false, -- SIN texto a la derecha
-  
+  virtual_text = false, -- Sin texto virtual
   signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] = "✘",
-      [vim.diagnostic.severity.WARN] = "▲",
-      [vim.diagnostic.severity.HINT] = "⚑",
-      [vim.diagnostic.severity.INFO] = "»",
+      [vim.diagnostic.severity.ERROR] = "󰅚", -- Icono de X rojo para errores
+      [vim.diagnostic.severity.WARN] = "󰀪", -- Icono de triángulo amarillo para warnings  
+      [vim.diagnostic.severity.INFO] = "󰋽", -- Icono de info azul
+      [vim.diagnostic.severity.HINT] = "󰌶", -- Icono de bombilla para hints
     },
   },
-  
-  underline = true, -- Subrayar errores (línea roja)
-  update_in_insert = false, -- No actualizar en modo insert
-  severity_sort = true, -- Ordenar por severidad
-  
-  -- Configuración de float mejorada con wrap REAL
+  underline = true, -- Subrayar errores
+  update_in_insert = false,
+  severity_sort = true,
   float = {
     focusable = true,
-    style = "minimal",
     border = "rounded",
     source = "always",
     header = "",
     prefix = function(diagnostic, i, total)
-      local level = vim.diagnostic.severity[diagnostic.severity]
       local icons = {
-        [vim.diagnostic.severity.ERROR] = "✘ Error: ",
-        [vim.diagnostic.severity.WARN] = "▲ Warning: ",
-        [vim.diagnostic.severity.INFO] = "» Info: ",
-        [vim.diagnostic.severity.HINT] = "⚑ Hint: ",
+        [vim.diagnostic.severity.ERROR] = "󰅚 Error: ",
+        [vim.diagnostic.severity.WARN] = "󰀪 Warning: ",
+        [vim.diagnostic.severity.INFO] = "󰋽 Info: ",
+        [vim.diagnostic.severity.HINT] = "󰌶 Hint: ",
       }
       return icons[diagnostic.severity] or "● "
     end,
     suffix = "",
-    wrap = true, -- WRAP habilitado
-    -- Configuración dinámica basada en tamaño de pantalla
-    max_width = function() 
-      return math.min(120, math.floor(vim.o.columns * 0.8)) 
-    end,
-    max_height = function() 
-      return math.min(20, math.floor(vim.o.lines * 0.3)) 
-    end,
-    close_events = { 
-      "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre" 
-    },
+    wrap = true,
+    max_width = 80,
+    max_height = 20,
   },
 })
 
--- Función para mostrar diagnóstico flotante con wrap garantizado
-local function show_line_diagnostics()
+-- Función SIMPLE para mostrar diagnósticos
+local function show_diagnostics()
   local line = vim.fn.line('.') - 1
   local diagnostics = vim.diagnostic.get(0, { lnum = line })
   
-  if #diagnostics == 0 then
-    return
+  if #diagnostics > 0 then
+    vim.diagnostic.open_float(nil, {
+      scope = "line",
+      focusable = true,
+      border = "rounded",
+      wrap = true,
+      max_width = 80,
+      close_events = {"CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre"},
+    })
   end
-
-  local opts = {
-    focusable = true,
-    close_events = { "CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre" },
-    border = "rounded",
-    source = "always",
-    prefix = function(diagnostic, i, total)
-      local level = vim.diagnostic.severity[diagnostic.severity]
-      local icons = {
-        [vim.diagnostic.severity.ERROR] = "✘ Error: ",
-        [vim.diagnostic.severity.WARN] = "▲ Warning: ",
-        [vim.diagnostic.severity.INFO] = "» Info: ",
-        [vim.diagnostic.severity.HINT] = "⚑ Hint: ",
-      }
-      return icons[diagnostic.severity] or "● "
-    end,
-    suffix = "",
-    scope = "cursor", -- Solo diagnósticos en la línea actual
-    wrap = true, -- WRAP habilitado
-    -- Configuración específica para asegurar wrap
-    max_width = math.min(120, math.floor(vim.o.columns * 0.8)),
-    max_height = 20,
-  }
-  
-  vim.diagnostic.open_float(nil, opts)
 end
 
--- Función para configurar autocomandos
-local function setup_autocmds()
-  local group = vim.api.nvim_create_augroup("InlineDiagnostics", { clear = true })
-  
-  -- Mostrar diagnóstico flotante automáticamente al mantener el cursor
-  vim.api.nvim_create_autocmd("CursorHold", {
-    group = group,
-    callback = function()
-      -- Solo mostrar si hay diagnósticos en la línea actual
-      local diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line('.') - 1 })
-      if #diagnostics > 0 then
-        show_line_diagnostics()
-      end
-    end,
-  })
-  
-  -- Configurar el tiempo de CursorHold (en milisegundos)
-  vim.opt.updatetime = 1000 -- Mostrar después de 1 segundo sin mover el cursor
-  
-  -- Mejorar el comportamiento de K
-  vim.api.nvim_create_autocmd("LspAttach", {
-    group = group,
-    callback = function(ev)
-      local opts = { buffer = ev.buf }
-      -- Mapear K solo para diagnósticos, sin mensajes molestos
-      vim.keymap.set("n", "K", function()
-        local diagnostics = vim.diagnostic.get(0, { lnum = vim.fn.line('.') - 1 })
-        if #diagnostics > 0 then
-          show_line_diagnostics()
-        else
-          -- Intentar hover silenciosamente
-          local params = vim.lsp.util.make_position_params()
-          vim.lsp.buf_request(0, "textDocument/hover", params, function(err, result, ctx, config)
-            -- Solo mostrar hover si realmente hay contenido útil
-            if result and result.contents then
-              local contents = result.contents
-              local has_content = false
-              
-              -- Revisar si hay contenido real
-              if type(contents) == "string" and contents ~= "" then
-                has_content = true
-              elseif type(contents) == "table" then
-                if contents.value and contents.value ~= "" then
-                  has_content = true
-                elseif type(contents) == "table" and #contents > 0 then
-                  for _, content in ipairs(contents) do
-                    if type(content) == "string" and content ~= "" then
-                      has_content = true
-                      break
-                    elseif type(content) == "table" and content.value and content.value ~= "" then
-                      has_content = true
-                      break
-                    end
-                  end
-                end
-              end
-              
-              -- Solo mostrar si hay contenido real
-              if has_content then
-                vim.lsp.buf.hover()
-              end
-              -- Si no hay contenido, no hacer nada (sin mensaje molesto)
-            end
-          end)
-        end
-      end, opts)
-    end,
-  })
-  
-  -- Colorear números de línea con errores
-  vim.api.nvim_create_autocmd({ "DiagnosticChanged", "BufEnter" }, {
-    group = group,
-    callback = function()
-      local diagnostics = vim.diagnostic.get(0)
-      
-      -- Limpiar highlights anteriores
-      vim.fn.clearmatches()
-      
-      -- Aplicar colores a líneas con diagnósticos
-      for _, diagnostic in ipairs(diagnostics) do
-        local line_nr = diagnostic.lnum + 1
-        local severity = diagnostic.severity
-        
-        if severity == vim.diagnostic.severity.ERROR then
-          vim.fn.matchaddpos("DiagnosticLineNrError", { line_nr })
-        elseif severity == vim.diagnostic.severity.WARN then
-          vim.fn.matchaddpos("DiagnosticLineNrWarn", { line_nr })
-        elseif severity == vim.diagnostic.severity.INFO then
-          vim.fn.matchaddpos("DiagnosticLineNrInfo", { line_nr })
-        elseif severity == vim.diagnostic.severity.HINT then
-          vim.fn.matchaddpos("DiagnosticLineNrHint", { line_nr })
-        end
-      end
-    end,
-  })
-  
-  -- Agregar comando para mostrar todos los diagnósticos del buffer
-  vim.api.nvim_create_user_command("DiagnosticsList", function()
-    vim.diagnostic.setloclist()
-  end, { desc = "Mostrar lista de diagnósticos del buffer" })
-end
-
--- Función para configurar colores de diagnósticos (línea completa coloreada)
+-- Configuración SIMPLE de colores con iconos bien visibles
 local function setup_colors()
-  -- Colores para toda la línea con fondo
+  -- Colores para líneas con errores (MÁS VISIBLES)
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { 
-    bg = "#3c1518", -- Fondo rojo oscuro para errores
-    fg = "#f38ba8", -- Texto rojo claro
+    bg = "#4a1a1a", -- Fondo rojo más oscuro
+    fg = "#ff6b6b", -- Texto rojo brillante
     undercurl = true,
-    sp = "#f38ba8", -- Subrayado rojo
+    sp = "#ff4757", -- Subrayado rojo intenso
   })
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { 
-    bg = "#3c2f00", -- Fondo amarillo oscuro para warnings
-    fg = "#f9e2af", -- Texto amarillo claro
+    bg = "#4a3a00", -- Fondo amarillo oscuro
+    fg = "#feca57", -- Texto amarillo brillante
     undercurl = true,
-    sp = "#f9e2af", -- Subrayado amarillo
+    sp = "#ff9f43", -- Subrayado naranja
   })
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { 
-    bg = "#1e2a3c", -- Fondo azul oscuro para info
-    fg = "#89b4fa", -- Texto azul claro
+    bg = "#1a2a4a", -- Fondo azul oscuro
+    fg = "#48cae4", -- Texto azul claro
     undercurl = true,
-    sp = "#89b4fa", -- Subrayado azul
+    sp = "#0077be", -- Subrayado azul
   })
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { 
-    bg = "#1e3c32", -- Fondo verde oscuro para hints
-    fg = "#94e2d5", -- Texto verde claro
+    bg = "#0a3325", -- Fondo verde oscuro
+    fg = "#00ff88", -- Texto verde neón 
     undercurl = true,
-    sp = "#94e2d5", -- Subrayado verde
+    sp = "#00ff88", -- Subrayado verde intenso
   })
   
-  -- Signos en la columna lateral más visibles
+  -- Iconos en la columna lateral CON COLORES INTENSOS
   vim.api.nvim_set_hl(0, "DiagnosticSignError", { 
-    fg = "#f38ba8", 
-    bg = "NONE" 
+    fg = "#ff4757", -- Rojo intenso
+    bg = "NONE",
   })
   vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { 
-    fg = "#f9e2af", 
-    bg = "NONE" 
+    fg = "#ff9f43", -- Naranja brillante
+    bg = "NONE",
   })
   vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { 
-    fg = "#89b4fa", 
-    bg = "NONE" 
+    fg = "#48cae4", -- Azul claro
+    bg = "NONE",
   })
   vim.api.nvim_set_hl(0, "DiagnosticSignHint", { 
-    fg = "#94e2d5", 
-    bg = "NONE" 
+    fg = "#00ff88", -- Verde neón
+    bg = "NONE",
   })
   
-  -- Números de línea coloreados para líneas con errores
-  vim.api.nvim_set_hl(0, "DiagnosticLineNrError", { 
-    fg = "#f38ba8", 
-    bg = "#3c1518",
-    bold = true
+  -- Colores para texto en los floats
+  vim.api.nvim_set_hl(0, "DiagnosticFloatingError", { 
+    fg = "#ff6b6b", 
+    bg = "#1e222a" 
   })
-  vim.api.nvim_set_hl(0, "DiagnosticLineNrWarn", { 
-    fg = "#f9e2af", 
-    bg = "#3c2f00",
-    bold = true
+  vim.api.nvim_set_hl(0, "DiagnosticFloatingWarn", { 
+    fg = "#feca57", 
+    bg = "#1e222a" 
   })
-  vim.api.nvim_set_hl(0, "DiagnosticLineNrInfo", { 
-    fg = "#89b4fa", 
-    bg = "#1e2a3c",
-    bold = true
+  vim.api.nvim_set_hl(0, "DiagnosticFloatingInfo", { 
+    fg = "#48cae4", 
+    bg = "#1e222a" 
   })
-  vim.api.nvim_set_hl(0, "DiagnosticLineNrHint", { 
-    fg = "#94e2d5", 
-    bg = "#1e3c32",
-    bold = true
+  vim.api.nvim_set_hl(0, "DiagnosticFloatingHint", { 
+    fg = "#00ff88", -- Verde neón
+    bg = "#1e222a",
   })
 end
 
--- Función principal de setup
+-- Setup SIMPLE
 function M.setup()
   setup_colors()
-  setup_autocmds()
   
-  -- Asegurar que trouble esté cerrado si existe
-  pcall(function()
-    local trouble = require("trouble")
-    if trouble and trouble.close then
-      trouble.close()
+  -- Mapear K DIRECTAMENTE
+  vim.keymap.set("n", "K", function()
+    local line = vim.fn.line('.') - 1
+    local diagnostics = vim.diagnostic.get(0, { lnum = line })
+    
+    if #diagnostics > 0 then
+      show_diagnostics()
+    else
+      vim.lsp.buf.hover()
     end
-  end)
+  end, { desc = "Show diagnostics or LSP hover", noremap = true, silent = true })
   
-
-end
-
--- Función para toggle de diagnósticos (subrayado y signos)
-function M.toggle_diagnostics()
-  local config = vim.diagnostic.config()
-  local enabled = config.underline or config.signs
-  
-  vim.diagnostic.config({
-    underline = not enabled,
-    signs = not enabled
+  -- Mostrar diagnósticos automáticamente al parar el cursor
+  vim.api.nvim_create_autocmd("CursorHold", {
+    group = vim.api.nvim_create_augroup("DiagnosticsShow", { clear = true }),
+    callback = function()
+      local line = vim.fn.line('.') - 1
+      local diagnostics = vim.diagnostic.get(0, { lnum = line })
+      if #diagnostics > 0 then
+        vim.defer_fn(function()
+          show_diagnostics()
+        end, 100)
+      end
+    end,
   })
   
-  local status = enabled and "deshabilitados" or "habilitados"
-  print("Diagnósticos " .. status)
-end
-
--- Función para mostrar diagnósticos manualmente
-function M.show_diagnostics()
-  show_line_diagnostics()
-end
-
--- Función para ver todos los diagnósticos en quickfix
-function M.show_all_diagnostics()
-  vim.diagnostic.setqflist()
-  vim.cmd("copen")
+  -- Configurar timing
+  vim.opt.updatetime = 1000 -- 1 segundo
 end
 
 return M

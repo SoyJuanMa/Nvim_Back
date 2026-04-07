@@ -4,15 +4,7 @@ local M = {}
 
 -- Configuración básica de diagnósticos CON ICONOS COLORIDOS  
 vim.diagnostic.config({
-  virtual_text = {
-    spacing = 4, -- Espacio entre el código y el mensaje
-    prefix = "󰅚", -- Icono que aparece antes del mensaje
-    source = false, -- No mostrar el source (typescript, ts, etc.)
-    format = function(diagnostic)
-      -- Solo mostrar el mensaje, sin el source
-      return diagnostic.message
-    end,
-  },
+  virtual_text = false, -- Sin texto virtual
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = "󰅚", -- Icono de X rojo para errores
@@ -27,7 +19,7 @@ vim.diagnostic.config({
   float = {
     focusable = true,
     border = "rounded",
-    source = false, -- CAMBIADO: No mostrar source para evitar duplicación
+    source = "always",
     header = "",
     prefix = function(diagnostic, i, total)
       local icons = {
@@ -64,28 +56,28 @@ end
 
 -- Configuración SIMPLE de colores con iconos bien visibles
 local function setup_colors()
-  -- Colores para líneas con errores (DESACTIVADOS - sin fondos brillantes)
+  -- Colores para líneas con errores (MÁS VISIBLES)
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { 
-    bg = "NONE", -- Sin fondo
-    fg = "NONE", -- Sin color de texto
+    bg = "#4a1a1a", -- Fondo rojo más oscuro
+    fg = "#ff6b6b", -- Texto rojo brillante
     undercurl = true,
     sp = "#ff4757", -- Subrayado rojo intenso
   })
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { 
-    bg = "NONE", -- Sin fondo
-    fg = "NONE", -- Sin color de texto
+    bg = "#4a3a00", -- Fondo amarillo oscuro
+    fg = "#feca57", -- Texto amarillo brillante
     undercurl = true,
     sp = "#ff9f43", -- Subrayado naranja
   })
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { 
-    bg = "NONE", -- Sin fondo
-    fg = "NONE", -- Sin color de texto
+    bg = "#1a2a4a", -- Fondo azul oscuro
+    fg = "#48cae4", -- Texto azul claro
     undercurl = true,
     sp = "#0077be", -- Subrayado azul
   })
   vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { 
-    bg = "NONE", -- Sin fondo
-    fg = "NONE", -- Sin color de texto
+    bg = "#0a3325", -- Fondo verde oscuro
+    fg = "#00ff88", -- Texto verde neón 
     undercurl = true,
     sp = "#00ff88", -- Subrayado verde intenso
   })

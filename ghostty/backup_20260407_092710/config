@@ -16,7 +16,7 @@ font-size = 13.5
 # │                                  WINDOW                                      │
 # └──────────────────────────────────────────────────────────────────────────────┘
 
-background-opacity = 0.60
+background-opacity = 0.90
 background-blur-radius = 20
 
 window-decoration = true
@@ -75,7 +75,7 @@ keybind = alt+s=write_screen_file:paste
 # └──────────────────────────────────────────────────────────────────────────────┘
 
 # --- Base Colors ---
-background = 000000
+background = 06080f
 foreground = f3f6f9
 cursor-color = de8fa8
 cursor-style = underline

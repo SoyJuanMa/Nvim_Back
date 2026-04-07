@@ -1,5 +1,4 @@
 vim.api.nvim_set_hl(0, "SnacksDashboardHeader", { fg = "#c34043", bold = true }) -- color kanagawa dragon red
-
 local mode = {
   "mode",
   fmt = function(s)
@@ -55,6 +54,32 @@ return {
     opts = {},
     event = "VeryLazy",
     enabled = vim.fn.has("nvim-0.10.0") == 1,
+  }, -- Plugin: noice.nvim
+  -- URL: https://github.com/folke/noice.nvim
+  -- Description: A Neovim plugin for enhancing the command-line UI.
+  {
+    "folke/noice.nvim",
+    config = function()
+      require("noice").setup({
+        cmdline = {
+          view = "cmdline", -- Use the cmdline view for the command-line
+        },
+        presets = {
+          bottom_search = true, -- Enable bottom search view
+          command_palette = true, -- Enable command palette view
+          lsp_doc_border = true, -- Enable LSP documentation border
+        },
+        -- Uncomment the following lines to customize the cmdline popup view
+        -- views = {
+        --   cmdline_popup = {
+        --     filter_options = {},
+        --     win_options = {
+        --       winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+        --     },
+        --   },
+        -- },
+      })
+    end,
   },
   {
     "folke/todo-comments.nvim",
@@ -100,9 +125,9 @@ return {
     requires = { "nvim-tree/nvim-web-devicons", opt = true }, -- Optional dependency for icons
     opts = {
       options = {
-        theme = "gentleman-kanagawa-blur", -- Set the theme for lualine
+        --theme = "marlyn", -- Set the theme for lualine
         --  theme = "onedark", -- Corregido: era "onadark"
-        --   theme = "kanagawa",
+        theme = "rose-pine",
         icons_enabled = true, -- Enable icons in the statusline
       },
       sections = {

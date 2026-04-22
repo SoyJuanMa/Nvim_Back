@@ -43,6 +43,8 @@ return {
     "coder/claudecode.nvim",
     enabled = false,
   },
+  { "nvim-mini/mini.icons", enabled = false },
+  { "DaikyXendo/nvim-material-icon", enabled = false }, -- No soporta iconos de carpetas
   {
     -- Plugin: trouble.nvim - Deshabilitado para usar diagnósticos inline
     -- URL: https://github.com/folke/trouble.nvim

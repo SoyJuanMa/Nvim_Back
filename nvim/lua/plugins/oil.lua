@@ -4,19 +4,31 @@
 return {
   "stevearc/oil.nvim",
 
+  -- Load Oil when opening a directory or when using the keymap
   lazy = false,
 
   keys = {
     { "-", "<CMD>Oil<CR>", desc = "Open Oil (parent dir)" },
+    { "<leader>E", "<CMD>Oil --float<CR>", desc = "Open Oil (floating)" },
   },
 
   opts = {
+    -- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
     default_file_explorer = true,
-    restore_win_options = true,
-    skip_confirm_for_simple_edits = false,
-    prompt_save_on_select_new_entry = true,
-    use_default_keymaps = false,
 
+    -- Mostrar iconos en la columna (usando nvim-web-devicons)
+    columns = { "icon" },
+
+    -- Restore window options to previous values when leaving an oil buffer
+    restore_win_options = true,
+
+    -- Skip the confirmation popup for simple operations
+    skip_confirm_for_simple_edits = false,
+
+    -- Selecting a new/moved/renamed file or directory will prompt you to save changes first
+    prompt_save_on_select_new_entry = true,
+
+    -- Keymaps in oil buffer. Can be any value that `vim.keymap.set` accepts OR a table of keymap
     keymaps = {
       ["g?"] = "actions.show_help",
       ["<CR>"] = "actions.select",
@@ -34,412 +46,278 @@ return {
       ["gx"] = "actions.open_external",
       ["g."] = "actions.toggle_hidden",
       ["g\\"] = "actions.toggle_trash",
+      -- Quick quit
       ["q"] = "actions.close",
     },
 
+    -- Set to false to disable all of the above keymaps
+    use_default_keymaps = false,
+
     view_options = {
+      -- Show files and directories that start with "." by default
       show_hidden = true,
+      -- This function defines what is considered a "hidden" file
       is_hidden_file = function(name, bufnr)
         return vim.startswith(name, ".")
       end,
+      -- This function defines what will never be shown, even when `show_hidden` is set
       is_always_hidden = function(name, bufnr)
         return name == ".." or name == ".git"
       end,
+      -- Natural sort order for files and directories
       natural_order = true,
       case_insensitive = false,
       sort = {
+        -- sort order can be "asc" or "desc"
+        -- see :help oil-columns to see which columns are sortable
         { "type", "asc" },
         { "name", "asc" },
       },
-      
-      -- Iconos personalizados con colores específicos
-      symbols = {
-        files = {
-          -- === ARCHIVOS ESPECÍFICOS CON COLORES ===
-          -- JavaScript (amarillo)
-          ["package.json"] = "󰎙",
-          ["jest.config.js"] = "󰙨",
-          ["webpack.config.js"] = "󰜷",
-          ["vite.config.js"] = "󰚩",
-          ["rollup.config.js"] = "󰊢",
-          ["babel.config.js"] = "󰨞",
-          ["eslint.config.js"] = "󰱺",
-          ["prettier.config.js"] = "󰉿",
-          
-          -- TypeScript (azul)
-          ["tsconfig.json"] = "󰛦",
-          ["jest.config.ts"] = "󰙨",
-          ["next.config.ts"] = "󰚩",
-          
-          -- Docker (azul océano)
-          ["Dockerfile"] = "󰡨",
-          ["docker-compose.yml"] = "󰡨",
-          ["docker-compose.yaml"] = "󰡨",
-          [".dockerignore"] = "󰡨",
-          
-          -- Base de datos
-          ["prisma.schema"] = "󰔶",
-          ["schema.prisma"] = "󰔶",
-          ["drizzle.config.ts"] = "󰆼",
-          
-          -- Bun (rosa/naranja)
-          ["bun.lockb"] = "󰂫",
-          ["bunfig.toml"] = "󰂫",
-          
-          -- React específicos
-          ["next.config.js"] = "󰚩",
-          ["nuxt.config.js"] = "󱄆", 
-          ["astro.config.js"] = "󰑣",
-          ["svelte.config.js"] = "󰜈",
-          ["vue.config.js"] = "󰡄",
-          ["tailwind.config.js"] = "󱏿",
-          ["remix.config.js"] = "󰿨",
-          
-          -- Testing específicos
-          ["vitest.config.js"] = "󰙨",
-          ["vitest.config.ts"] = "󰙨",
-          ["playwright.config.js"] = "󰙨",
-          ["playwright.config.ts"] = "󰙨",
-          ["cypress.config.js"] = "󰙨",
-          ["cypress.config.ts"] = "󰙨",
-          
-          -- Mongo y APIs
-          ["mongodb.js"] = "󰆧",
-          ["mongoose.js"] = "󰆧", 
-          ["apollo.config.js"] = "󰘬",
-          ["graphql.config.js"] = "󰘬",
-          
-          -- Otros configs importantes
-          [".env"] = "󰙪",
-          [".env.local"] = "󰙪",
-          [".env.example"] = "󰙪",
-          ["nodemon.json"] = "󰚩",
-          ["turbo.json"] = "󰚩",
-          ["lerna.json"] = "󰚩",
-          ["rush.json"] = "󰚩",
-          
-          -- === EXTENSIONES POR COLORES ===
-          -- JavaScript (amarillo) 
-          [".js"] = "󰌞",
-          [".mjs"] = "󰌞",
-          [".cjs"] = "󰌞",
-          [".jsx"] = "",
-          
-          -- TypeScript (azul)
-          [".ts"] = "󰛦", 
-          [".tsx"] = "",
-          [".d.ts"] = "󰛦",
-          
-          -- Testing (rojo/rosa)
-          [".test.js"] = "󰙨",
-          [".test.ts"] = "󰙨",
-          [".test.jsx"] = "󰙨",
-          [".test.tsx"] = "󰙨",
-          [".spec.js"] = "󰙨",
-          [".spec.ts"] = "󰙨",
-          [".spec.jsx"] = "󰙨", 
-          [".spec.tsx"] = "󰙨",
-          [".e2e.js"] = "󰙨",
-          [".e2e.ts"] = "󰙨",
-          
-          -- Frameworks específicos
-          [".vue"] = "󰡄",
-          [".svelte"] = "󰜈",
-          [".astro"] = "󰑣",
-          
-          -- Estilos
-          [".css"] = "",
-          [".scss"] = "",
-          [".sass"] = "",
-          [".less"] = "",
-          [".styl"] = "",
-          [".stylus"] = "",
-          
-          -- HTML/Templates  
-          [".html"] = "",
-          [".htm"] = "",
-          [".ejs"] = "",
-          [".hbs"] = "",
-          [".handlebars"] = "",
-          [".pug"] = "",
-          [".jade"] = "",
-          
-          -- Config files
-          [".json"] = "",
-          [".yaml"] = "",
-          [".yml"] = "",
-          [".toml"] = "",
-          [".xml"] = "󰗀",
-          [".ini"] = "",
-          [".cfg"] = "",
-          [".conf"] = "",
-          
-          -- Programming languages
-          [".py"] = "",
-          [".lua"] = "",
-          [".rs"] = "",
-          [".go"] = "",
-          [".java"] = "",
-          [".kt"] = "",
-          [".swift"] = "󰛥",
-          [".php"] = "",
-          [".rb"] = "",
-          [".c"] = "",
-          [".cpp"] = "",
-          [".cc"] = "",
-          [".h"] = "",
-          [".hpp"] = "",
-          [".cs"] = "󰌛",
-          [".fs"] = "",
-          [".hs"] = "",
-          [".elm"] = "",
-          [".clj"] = "",
-          [".ex"] = "",
-          [".exs"] = "",
-          [".dart"] = "",
-          [".r"] = "󰟔",
-          [".R"] = "󰟔",
-          [".jl"] = "",
-          [".scala"] = "",
-          [".sh"] = "",
-          [".bash"] = "",
-          [".zsh"] = "",
-          [".fish"] = "",
-          
-          -- Database
-          [".sql"] = "",
-          [".db"] = "",
-          [".sqlite"] = "",
-          [".sqlite3"] = "",
-          
-          -- Documentation  
-          [".md"] = "",
-          [".mdx"] = "",
-          [".txt"] = "󰈙",
-          [".pdf"] = "",
-          [".doc"] = "",
-          [".docx"] = "",
-          [".rtf"] = "",
-          
-          -- Images
-          [".png"] = "󰋩",
-          [".jpg"] = "󰋩",
-          [".jpeg"] = "󰋩",
-          [".gif"] = "󰋩",
-          [".svg"] = "󰜡",
-          [".ico"] = "󰋩",
-          [".webp"] = "󰋩",
-          [".bmp"] = "󰋩",
-          
-          -- Media
-          [".mp4"] = "",
-          [".avi"] = "",
-          [".mov"] = "",
-          [".wmv"] = "",
-          [".mp3"] = "󰈣",
-          [".wav"] = "󰈣",
-          [".flac"] = "󰈣",
-          [".ogg"] = "󰈣",
-          
-          -- Archives
-          [".zip"] = "",
-          [".tar"] = "",
-          [".gz"] = "",
-          [".rar"] = "",
-          [".7z"] = "",
-          [".xz"] = "",
-          [".bz2"] = "",
-          
-          -- === CARPETAS ESPECÍFICAS ===
-          ["node_modules"] = "",
-          [".git"] = "",
-          [".github"] = "",
-          [".vscode"] = "",
-          [".idea"] = "",
-          ["dist"] = "",
-          ["build"] = "",
-          ["public"] = "",
-          ["static"] = "",
-          ["assets"] = "",
-          ["images"] = "󰋩",
-          ["icons"] = "󰜡",
-          ["components"] = "",
-          ["pages"] = "",
-          ["src"] = "",
-          ["lib"] = "",
-          ["libs"] = "",
-          ["packages"] = "",
-          ["utils"] = "",
-          ["helpers"] = "",
-          ["hooks"] = "",
-          ["contexts"] = "",
-          ["providers"] = "",
-          ["services"] = "",
-          ["api"] = "",
-          ["styles"] = "",
-          ["css"] = "",
-          ["scss"] = "",
-          ["sass"] = "",
-          ["tests"] = "󰙨",
-          ["__tests__"] = "󰙨",
-          ["test"] = "󰙨",
-          ["spec"] = "󰙨",
-          ["e2e"] = "󰙨",
-          ["cypress"] = "󰙨",
-          ["playwright"] = "󰙨",
-          ["docs"] = "",
-          ["documentation"] = "",
-          ["doc"] = "",
-          ["config"] = "",
-          ["configs"] = "",
-          ["configuration"] = "",
-          ["scripts"] = "",
-          ["bin"] = "",
-          ["vendors"] = "",
-          ["vendor"] = "",
-          ["tmp"] = "",
-          ["temp"] = "",
-          ["cache"] = "",
-          [".cache"] = "",
-          ["logs"] = "",
-          ["log"] = "",
-          ["prisma"] = "󰔶",
-          ["database"] = "󰆼",
-          ["db"] = "󰆼",
-          ["migrations"] = "󰆼",
-          ["seeds"] = "󰆼",
-          
-          -- === TIPOS GENERALES (fallback) ===
-          ["dir"] = "",
-          ["file"] = "",
-          ["pipe"] = "󰟥",
-          ["socket"] = "󰐧", 
-          ["executable"] = "",
-          ["symlink-dir"] = "",
-          ["symlink-file"] = "",
-          ["device-char"] = "",
-          ["device-block"] = "󰜫",
-          ["special"] = "",
-        },
-      },
     },
 
+    -- Configuration for the floating window in oil.open_float
     float = {
+      -- Padding around the floating window
       padding = 2,
       max_width = 100,
       max_height = 30,
       border = "rounded",
-      win_options = { winblend = 0 },
+      win_options = {
+        winblend = 0,
+      },
+      -- preview_split: Split direction: "auto", "left", "right", "above", "below".
       preview_split = "auto",
+      -- This is the config that will be passed to nvim_open_win.
+      -- Change values here to customize the layout
       override = function(conf)
         return conf
       end,
     },
 
+    -- Configuration for the actions floating preview window
     preview = {
+      -- Width dimensions can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+      -- min_width and max_width can be a single value or a list of mixed integer/float types.
       max_width = 0.9,
+      -- min_width = {40, 0.4} means "at least 40 columns, or at least 40% of total"
       min_width = { 40, 0.4 },
+      -- optionally define an integer/float for the exact width of the preview window
+      width = nil,
+      -- Height dimensions can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
       max_height = 0.9,
       min_height = { 5, 0.1 },
+      -- optionally define an integer/float for the exact height of the preview window
+      height = nil,
       border = "rounded",
-      win_options = { winblend = 0 },
+      win_options = {
+        winblend = 0,
+      },
+      -- Whether the preview window is automatically updated when the cursor is moved
       update_on_cursor_moved = true,
     },
 
+    -- Configuration for the floating progress window
     progress = {
       max_width = 0.9,
       min_width = { 40, 0.4 },
+      width = nil,
       max_height = { 10, 0.9 },
       min_height = { 5, 0.1 },
+      height = nil,
       border = "rounded",
       minimized_border = "none",
-      win_options = { winblend = 0 },
+      win_options = {
+        winblend = 0,
+      },
     },
 
+    -- Configuration for the floating SSH window
     ssh = {
       border = "rounded",
     },
   },
 
   dependencies = {
-    { "nvim-mini/mini.icons", opts = {} },
+    "nvim-tree/nvim-web-devicons",
   },
 
   config = function(_, opts)
-    require("oil").setup(opts)
-    
-    -- Configurar colores específicos para cada tipo de archivo
-    local function setup_oil_colors()
-      -- JavaScript (amarillo)
-      vim.api.nvim_set_hl(0, "OilJS", { fg = "#f9e2af", bold = true })
-      
-      -- TypeScript (azul)  
-      vim.api.nvim_set_hl(0, "OilTS", { fg = "#89b4fa", bold = true })
-      
-      -- React (azul claro)
-      vim.api.nvim_set_hl(0, "OilReact", { fg = "#74c7ec", bold = true })
-      
-      -- Vue (verde)
-      vim.api.nvim_set_hl(0, "OilVue", { fg = "#a6e3a1", bold = true })
-      
-      -- Testing (rojo/rosa)
-      vim.api.nvim_set_hl(0, "OilTest", { fg = "#f38ba8", bold = true })
-      
-      -- Docker (azul océano)
-      vim.api.nvim_set_hl(0, "OilDocker", { fg = "#89dceb", bold = true })
-      
-      -- Bun (naranja/rosa)
-      vim.api.nvim_set_hl(0, "OilBun", { fg = "#fab387", bold = true })
-      
-      -- Prisma/Database (verde agua)
-      vim.api.nvim_set_hl(0, "OilDB", { fg = "#94e2d5", bold = true })
-      
-      -- CSS (rosa)
-      vim.api.nvim_set_hl(0, "OilCSS", { fg = "#f38ba8", bold = true })
-      
-      -- HTML (naranja)  
-      vim.api.nvim_set_hl(0, "OilHTML", { fg = "#fab387", bold = true })
-      
-      -- JSON (amarillo)
-      vim.api.nvim_set_hl(0, "OilJSON", { fg = "#f9e2af", bold = true })
-      
-      -- YAML (morado)
-      vim.api.nvim_set_hl(0, "OilYAML", { fg = "#cba6f7", bold = true })
-      
-      -- Env files (amarillo oscuro)
-      vim.api.nvim_set_hl(0, "OilEnv", { fg = "#e6c384", bold = true })
-      
-      -- Markdown (verde agua)
-      vim.api.nvim_set_hl(0, "OilMarkdown", { fg = "#94e2d5", bold = true })
-      
-      -- Imágenes (morado)
-      vim.api.nvim_set_hl(0, "OilImage", { fg = "#cba6f7", bold = true })
-      
-      -- Media (rosa)
-      vim.api.nvim_set_hl(0, "OilMedia", { fg = "#f38ba8", bold = true })
-      
-      -- Archives (gris)
-      vim.api.nvim_set_hl(0, "OilArchive", { fg = "#9399b2", bold = true })
-      
-      -- Carpetas especiales
-      vim.api.nvim_set_hl(0, "OilNodeModules", { fg = "#f38ba8", bold = true })
-      vim.api.nvim_set_hl(0, "OilGit", { fg = "#fab387", bold = true })
-      vim.api.nvim_set_hl(0, "OilSrc", { fg = "#a6e3a1", bold = true })
-      vim.api.nvim_set_hl(0, "OilComponents", { fg = "#74c7ec", bold = true })
-      vim.api.nvim_set_hl(0, "OilTests", { fg = "#f38ba8", bold = true })
-      
-      -- Colores por defecto
-      vim.api.nvim_set_hl(0, "OilDir", { fg = "#89b4fa", bold = true })
-      vim.api.nvim_set_hl(0, "OilFile", { fg = "#cdd6f4", bold = false })
+    -- PARCHE: Inyectar iconos personalizados de carpetas
+    -- Oil no usa nvim-web-devicons para carpetas, así que lo parcheamos manualmente
+    local folder_icons = {
+      -- Dependencies
+      node_modules = { icon = "", color = "#a6e3a1" },
+      [".git"] = { icon = "", color = "#f38ba8" },
+      [".github"] = { icon = "", color = "#9399b2" },
+      [".vscode"] = { icon = "", color = "#89dceb" },
+
+      -- Source directories
+      src = { icon = "󱧼", color = "#89dceb" },
+      lib = { icon = "󱧶", color = "#cba6f7" },
+      libs = { icon = "󱧶", color = "#cba6f7" },
+      dist = { icon = "󱥾", color = "#fab387" },
+      build = { icon = "", color = "#fab387" },
+      out = { icon = "", color = "#fab387" },
+      public = { icon = "󰉌", color = "#f9e2af" },
+      static = { icon = "", color = "#f9e2af" },
+      asset = { icon = "󰉔", color = "#cba6f7" },
+      assets = { icon = "󰉔", color = "#cba6f7" },
+
+      -- Testing
+      test = { icon = "󰙨", color = "#a6e3a1" },
+      tests = { icon = "󰙨", color = "#a6e3a1" },
+      __tests__ = { icon = "󰙨", color = "#a6e3a1" },
+      e2e = { icon = "󰙨", color = "#89dceb" },
+      cypress = { icon = "", color = "#89dceb" },
+      playwright = { icon = "󰐕", color = "#a6e3a1" },
+
+      -- Frontend architecture
+      component = { icon = "󰡀", color = "#74c7ec" },
+      components = { icon = "󰡀", color = "#74c7ec" },
+      page = { icon = "󰈙", color = "#fab387" },
+      pages = { icon = "󰈙", color = "#fab387" },
+      view = { icon = "󰉖", color = "#fab387" },
+      views = { icon = "󰉖", color = "#fab387" },
+      layout = { icon = "󰕮", color = "#cba6f7" },
+      layouts = { icon = "󰕮", color = "#cba6f7" },
+      hook = { icon = "󰛢", color = "#f9e2af" },
+      hooks = { icon = "󰛢", color = "#f9e2af" },
+      context = { icon = "󰘦", color = "#f9e2af" },
+      contexts = { icon = "󰘦", color = "#f9e2af" },
+      store = { icon = "󰆼", color = "#f38ba8" },
+      stores = { icon = "󰆼", color = "#f38ba8" },
+      style = { icon = "󰌜", color = "#cba6f7" },
+      styles = { icon = "󰌜", color = "#cba6f7" },
+      css = { icon = "", color = "#89b4fa" },
+
+      -- Backend architecture (DDD/Clean Architecture)
+      domain = { icon = "󰜬", color = "#f9e2af" },
+      domains = { icon = "󰜬", color = "#f9e2af" },
+      application = { icon = "󰘧", color = "#89dceb" },
+      applications = { icon = "󰘧", color = "#89dceb" },
+      infrastructure = { icon = "󰒋", color = "#9399b2" },
+      infrastructures = { icon = "󰒋", color = "#9399b2" },
+      service = { icon = "󰳼", color = "#a6e3a1" },
+      services = { icon = "󰳼", color = "#a6e3a1" },
+      controller = { icon = "󰘨", color = "#fab387" },
+      controllers = { icon = "󰘨", color = "#fab387" },
+      route = { icon = "󰑮", color = "#cba6f7" },
+      routes = { icon = "󰑮", color = "#cba6f7" },
+      api = { icon = "󰒃", color = "#74c7ec" },
+      apis = { icon = "󰒃", color = "#74c7ec" },
+      model = { icon = "󰆧", color = "#f9e2af" },
+      models = { icon = "󰆧", color = "#f9e2af" },
+      entity = { icon = "󰘨", color = "#f9e2af" },
+      entities = { icon = "󰘨", color = "#f9e2af" },
+      repository = { icon = "󰋊", color = "#89b4fa" },
+      repositories = { icon = "󰋊", color = "#89b4fa" },
+      middleware = { icon = "󱃪", color = "#9399b2" },
+      middlewares = { icon = "󱃪", color = "#9399b2" },
+      util = { icon = "󰉗", color = "#9399b2" },
+      utils = { icon = "󰉗", color = "#9399b2" },
+      helper = { icon = "󰋼", color = "#9399b2" },
+      helpers = { icon = "󰋼", color = "#9399b2" },
+      config = { icon = "󱁿", color = "#9399b2" },
+      configs = { icon = "󱁿", color = "#9399b2" },
+
+      -- Media
+      image = { icon = "󰈟", color = "#cba6f7" },
+      images = { icon = "󰈟", color = "#cba6f7" },
+      img = { icon = "󰈟", color = "#cba6f7" },
+      icon = { icon = "󰀻", color = "#fab387" },
+      icons = { icon = "󰀻", color = "#fab387" },
+      font = { icon = "󰛖", color = "#9399b2" },
+      fonts = { icon = "󰛖", color = "#9399b2" },
+      media = { icon = "󰦝", color = "#cba6f7" },
+
+      -- Documentation
+      doc = { icon = "󰈙", color = "#89b4fa" },
+      docs = { icon = "󰈙", color = "#89b4fa" },
+      documentation = { icon = "󰈙", color = "#89b4fa" },
+
+      -- Scripts
+      script = { icon = "󰯁", color = "#a6e3a1" },
+      scripts = { icon = "󰯁", color = "#a6e3a1" },
+      bin = { icon = "󰴉", color = "#9399b2" },
+
+      -- Types
+      type = { icon = "󰛦", color = "#89b4fa" },
+      types = { icon = "󰛦", color = "#89b4fa" },
+      ["@types"] = { icon = "󰛦", color = "#89b4fa" },
+
+      -- Database
+      migration = { icon = "󰆼", color = "#f9e2af" },
+      migrations = { icon = "󰆼", color = "#f9e2af" },
+      seed = { icon = "󰔨", color = "#a6e3a1" },
+      seeds = { icon = "󰔨", color = "#a6e3a1" },
+      prisma = { icon = "󱞊", color = "#89b4fa" },
+      database = { icon = "󰆼", color = "#f9e2af" },
+      databases = { icon = "󰆼", color = "#f9e2af" },
+      db = { icon = "󰆼", color = "#f9e2af" },
+
+      -- Logs/Temp
+      log = { icon = "󰌱", color = "#9399b2" },
+      logs = { icon = "󰌱", color = "#9399b2" },
+      tmp = { icon = "󰿘", color = "#9399b2" },
+      temp = { icon = "󰿘", color = "#9399b2" },
+      cache = { icon = "󰃨", color = "#9399b2" },
+
+      -- Containers
+      docker = { icon = "󰡨", color = "#89dceb" },
+      [".docker"] = { icon = "󰡨", color = "#89dceb" },
+
+      -- Common variants
+      common = { icon = "󰉋", color = "#9399b2" },
+      shared = { icon = "󰒅", color = "#9399b2" },
+      core = { icon = "󰅪", color = "#f38ba8" },
+      plugin = { icon = "󰏖", color = "#cba6f7" },
+      plugins = { icon = "󰏖", color = "#cba6f7" },
+      module = { icon = "󰏗", color = "#89dceb" },
+      modules = { icon = "󰏗", color = "#89dceb" },
+      package = { icon = "󰏖", color = "#a6e3a1" },
+      packages = { icon = "󰏖", color = "#a6e3a1" },
+    }
+
+    -- Sobrescribir la función get_icon_provider de Oil
+    local oil_util = require("oil.util")
+    local original_get_icon_provider = oil_util.get_icon_provider
+
+    oil_util.get_icon_provider = function()
+      local provider = original_get_icon_provider()
+
+      if not provider then
+        return nil
+      end
+
+      -- Wrapper que intercepta llamadas a carpetas
+      return function(type, name, conf)
+        if type == "directory" and folder_icons[name] then
+          -- Usar nuestro icono personalizado
+          local custom = folder_icons[name]
+
+          -- Crear highlight group si no existe
+          local hl_name = "OilCustomDir" .. name:gsub("[^%w]", "")
+          vim.api.nvim_set_hl(0, hl_name, { fg = custom.color })
+
+          return custom.icon, hl_name
+        else
+          -- Delegar a la función original
+          return provider(type, name, conf)
+        end
+      end
     end
 
+    require("oil").setup(opts)
+
+    -- Custom autocmds for Oil
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "oil",
       callback = function()
-        setup_oil_colors() -- Configurar colores cuando se abra oil
+        -- Set local options for oil buffers
         vim.opt_local.colorcolumn = ""
         vim.opt_local.signcolumn = "no"
 
+        -- Auto-save when leaving oil buffer with changes
         vim.api.nvim_create_autocmd("BufLeave", {
           buffer = 0,
           callback = function()
@@ -451,6 +329,7 @@ return {
       end,
     })
 
+    -- Global keymap to open Oil in current buffer's directory
     vim.keymap.set("n", "<leader>-", function()
       local oil = require("oil")
       local current_buf = vim.api.nvim_get_current_buf()
